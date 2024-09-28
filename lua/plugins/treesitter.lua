@@ -1,5 +1,5 @@
 return {
  -- treesitter plugin
- "nvim-treesitter",
+ "nvim-treesitter/nvim-treesitter",
  opts = { ensure_installed = { "cpp" } }
 }
