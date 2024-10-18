@@ -1,10 +1,6 @@
 return {
 	"neovim/nvim-lspconfig",
-	dependencies = {
-		{"hrsh7th/nvim-cmp"},
-		{"j-hui/fidget.nvim", opts = {} }
-	},
-
+	event = { "BufReadPost", "BufNewFile" },
 	config = function()
 		local lspconfig = require('lspconfig')
 
@@ -29,12 +25,29 @@ return {
 			map('n','<leader>=', '<cmd>lua vim.lsp.buf.formatting()<CR>')
 			map('n','<leader>ai','<cmd>lua vim.lsp.buf.incoming_calls()<CR>')
 			map('n','<leader>ao','<cmd>lua vim.lsp.buf.outgoing_calls()<CR>')
+			map('n','<leader>gS','<cmd>ClangdSwitchSourceHeader<CR>')
 		end
 
 		lspconfig.clangd.setup({
 			cmd = {'clangd', '--background-index', '--clang-tidy', '--log=verbose'},
 			filetypes = { "cc", "cpp" },
 			on_attach = custom_attach,
+		})
+
+		vim.api.nvim_create_autocmd('LspAttach', {
+			callback = function(args)
+			local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+				if client.supports_method('textDocument/formatting') then
+					-- Format the current buffer on save
+					vim.api.nvim_create_autocmd('BufWritePre', {
+						buffer = args.buf,
+						callback = function()
+							vim.lsp.buf.format({bufnr = args.buf, id = client.id })
+						end,
+					})
+				end
+			end
 		})
 	end,
 }

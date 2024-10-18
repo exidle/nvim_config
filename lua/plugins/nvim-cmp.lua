@@ -8,27 +8,35 @@ return {
 	 dependencies = {
 	   "hrsh7th/cmp-nvim-lsp",
 	   "hrsh7th/cmp-buffer",
-	   {
-		   "L3MON4D3/LuaSnip",
-		   version = "v2.*",
-	   },
-
-	   "rafamadriz/friendly-snippets",
-	   "onsails/lspkind.nvim", -- vs-code like pictograms
+	   "hrsh7th/cmp-path",
+	   "hrsh7th/cmp-cmdline",
+       "monkoose/neocodeium",
+	   --"hrsh7th/cmp-vsnip",
+	   --"hrsh7th/vim-vsnip",
+	   --"rafamadriz/friendly-snippets",
+	   --"onsails/lspkind.nvim", -- vs-code like pictograms
 	 },
 
 
 	 config = function()
 		local cmp = require("cmp")
-		local lspkind = require("lspkind")
-		local luasnip = require("luasnip")
+		--local lspkind = require("lspkind")
+		--local luasnip = require("luasnip")
 
-		require("luasnip.loaders.from_vscode").lazy_load()
+		-- require("luasnip.loaders.from_vscode").lazy_load()
+        local neocodeium = require("neocodeium")
+        cmp.event:on("menu_opened", function()
+            neocodeium.clear()
+        end)
 
 		cmp.setup({
+            completion = {
+                autocomplete = false,
+            },
 		    snippet = {
 			expand = function(args)
-			    luasnip.lsp_expand(args.body)
+			    --vim.fn["vsnip#anonymous"](args.body)
+			    vim.snippet.expand(args.body)
 			end,
 		    },
 		    mapping = cmp.mapping.preset.insert({
@@ -43,7 +51,7 @@ return {
 		    }),
 		    sources = cmp.config.sources({
 			{ name = "nvim_lsp" },
-			{ name = "luasnip" },
+			--{ name = "luasnip" },
 			{ name = "buffer" },
 			{ name = "path" },
 		    }),

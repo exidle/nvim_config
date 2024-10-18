@@ -3,6 +3,7 @@ return {
 	dependencies = {
 		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = true },
 		{ "nvim-lua/plenary.nvim" },
+		{ "nvim-telescope/telescope-dap.nvim" },
 	},
 	cmd = "Telescope",
 	 keys = {
@@ -28,10 +29,11 @@ return {
           override_file_sorter = true, -- override the file sorter
           case_mode = "smart_case", -- or "ignore_case" or "respect_case"
         },
-      },
+      },      
       defaults = {
         file_ignore_patterns = { "node_modules/", ".yarn/", ".git/", ".idea/" },
       }
     }
+    telescope.load_extension("dap")
   end
 }
